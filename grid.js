@@ -8,8 +8,8 @@ const CELL_GAP = 3;
 const GRID = [];
 
 const mouse = {
-		x: 10,
-		y: 10,
+		x: undefined,
+		y: undefined,
 		width: 0.1,
 		height: 0.1,
 }
@@ -33,7 +33,7 @@ class Cell {
 				this.height = CELL_SIZE;
 		}
 		draw() {
-				if (rectCollision(this, mouse)) {
+				if (mouse.x && mouse.y && rectCollision(this, mouse)) {
 						ctx.strokeStyle = 'green';
 						ctx.strokeRect(this.x,this.y,this.width,this.height);
 				}
