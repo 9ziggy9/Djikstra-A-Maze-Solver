@@ -8,8 +8,8 @@ const CELL_GAP = 3;
 const GRID = [];
 
 const mouse = {
-		x: undefined,
-		y: undefined,
+		x: 10,
+		y: 10,
 		width: 0.1,
 		height: 0.1,
 }
@@ -63,8 +63,6 @@ function rectCollision(first, second) {
 
 function run() {
 		ctx.clearRect(0,0,canvas.width,canvas.height);
-		ctx.fillStyle = 'grey';
-		ctx.fillRect(0,0,canvas.width,canvas.height);
 		handleGrid();
 		requestAnimationFrame(run);
 }
