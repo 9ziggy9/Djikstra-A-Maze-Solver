@@ -6,6 +6,7 @@ canvas.height = 600;
 const CELL_SIZE = 50;
 const CELL_GAP = 3;
 const GRID = [];
+const OBSTACLES = [];
 
 const mouse = {
 		x: undefined,
@@ -14,16 +15,6 @@ const mouse = {
 		height: 0.1,
 }
 let canvasPosition = canvas.getBoundingClientRect();
-
-// EVENT HANDLING
-canvas.addEventListener('mousemove', e => {
-		mouse.x = e.x - canvasPosition.left;
-		mouse.y = e.y - canvasPosition.top;
-});
-canvas.addEventListener('mouseleave', e => {
-		mouse.x = undefined;
-		mouse.y = undefined;
-})
 
 class Cell {
 		constructor(x,y) {
@@ -40,6 +31,35 @@ class Cell {
 		}
 }
 
+class Obstacle {
+		constructor(x,y) {
+				this.x = x;
+				this.y = y;
+				this.width = CELL_SIZE;
+				this.height = CELL_SIZE;
+		}
+		draw() {
+				ctx.fillStyle = 'orange';
+				ctx.fillRect(this.x,this.y,this.width,this.height);
+		}
+}
+
+// EVENT HANDLING
+canvas.addEventListener('mousemove', e => {
+		mouse.x = e.x - canvasPosition.left;
+		mouse.y = e.y - canvasPosition.top;
+});
+canvas.addEventListener('mouseleave', e => {
+		mouse.x = undefined;
+		mouse.y = undefined;
+})
+canvas.addEventListener('click', e => {
+		const gridPositionX = mouse.x - (mouse.x % CELL_SIZE);
+		const gridPositionY = mouse.y - (mouse.y % CELL_SIZE);
+		OBSTACLES.push(new Obstacle(gridPositionX, gridPositionY));
+});
+
+
 function createGrid() {
 		for (let y = 0; y < canvas.height; y += CELL_SIZE) {
 				for (let x = 0; x < canvas.width; x += CELL_SIZE) {
@@ -49,6 +69,7 @@ function createGrid() {
 }
 
 const handleGrid = () => GRID.forEach(cell => cell.draw());
+const handleObstacles = () => OBSTACLES.forEach(obs => obs.draw());
 
 function rectCollision(first, second) {
 		if (!( first.x > second.x + second.width ||
@@ -64,6 +85,7 @@ function rectCollision(first, second) {
 function run() {
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		handleGrid();
+		handleObstacles();
 		requestAnimationFrame(run);
 }
 
