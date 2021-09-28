@@ -14,10 +14,16 @@ const mouse = {
 		height: 0.1,
 }
 let canvasPosition = canvas.getBoundingClientRect();
+
+// EVENT HANDLING
 canvas.addEventListener('mousemove', e => {
 		mouse.x = e.x - canvasPosition.left;
 		mouse.y = e.y - canvasPosition.top;
 });
+canvas.addEventListener('mouseleave', e => {
+		mouse.x = undefined;
+		mouse.y = undefined;
+})
 
 class Cell {
 		constructor(x,y) {
@@ -48,12 +54,15 @@ function rectCollision(first, second) {
 		if (!( first.x > second.x + second.width ||
 					 first.x + first.width < second.x ||
 					 first.y > second.y + second.height ||
-					 first.y + first.height < second.y)) {
+					 first.y + first.height < second.y))
+		{
 				return true;
 		}
+		return false;
 }
 
 function run() {
+		ctx.clearRect(0,0,canvas.width,canvas.height);
 		ctx.fillStyle = 'grey';
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		handleGrid();
