@@ -1,0 +1,12 @@
+body {
+		background: linear-gradient(to left top, gray, darkgray) fixed;
+}
+#canvas1 {
+		border: 1px solid white;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 900px;
+		height: 600px;
+}
