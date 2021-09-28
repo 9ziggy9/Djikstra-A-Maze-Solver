@@ -7,6 +7,18 @@ const CELL_SIZE = 50;
 const CELL_GAP = 3;
 const GRID = [];
 
+const mouse = {
+		x: undefined,
+		y: undefined,
+		width: 0.1,
+		height: 0.1,
+}
+let canvasPosition = canvas.getBoundingClientRect();
+canvas.addEventListener('mousemove', e => {
+		mouse.x = e.x - canvasPosition.left;
+		mouse.y = e.y - canvasPosition.top;
+});
+
 class Cell {
 		constructor(x,y) {
 				this.x = x;
@@ -15,8 +27,10 @@ class Cell {
 				this.height = CELL_SIZE;
 		}
 		draw() {
-				ctx.strokeStyle = 'black';
-				ctx.strokeRect(this.x,this.y,this.width,this.height);
+				if (rectCollision(this, mouse)) {
+						ctx.strokeStyle = 'green';
+						ctx.strokeRect(this.x,this.y,this.width,this.height);
+				}
 		}
 }
 
@@ -28,8 +42,15 @@ function createGrid() {
 		}
 }
 
-function handleGrid() {
-		GRID.forEach(cell => cell.draw());
+const handleGrid = () => GRID.forEach(cell => cell.draw());
+
+function rectCollision(first, second) {
+		if (!( first.x > second.x + second.width ||
+					 first.x + first.width < second.x ||
+					 first.y > second.y + second.height ||
+					 first.y + first.height < second.y)) {
+				return true;
+		}
 }
 
 function run() {
