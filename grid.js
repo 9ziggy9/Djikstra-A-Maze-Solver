@@ -7,6 +7,7 @@ const CELL_SIZE = 50;
 const CELL_GAP = 3;
 const GRID = [];
 const OBSTACLES = [];
+const ENDPOINTS = [];
 
 // Edit modes
 let MODE = 'obstacles';
@@ -67,11 +68,21 @@ class Obstacle {
 		}
 }
 
+class Endpoint extends Cell {
+		constructor(x,y,type) {
+				super(x,y);
+				this.type = type;
+		}
+		draw() {
+				ctx.fillStyle = 'red';
+				ctx.fillRect(this.x,this.y,this.width,this.height);
+		}
+}
+
+// INITIALIZE GRID GRAPH
 let g = new GridGraph(last_x,last_y);
 g.initialize(true);
 let ACCESSIBLE = g.grid;
-const START = {x:0, y:0};
-const END = {x:4, y:4};
 
 // EVENT HANDLING
 window.addEventListener('keypress', e => {
@@ -89,13 +100,13 @@ canvas.addEventListener('mouseleave', e => {
 		mouse.x = undefined;
 		mouse.y = undefined;
 })
-// BOUNDARY INPUT
 canvas.addEventListener('click', e => {
+		const gridPositionX = mouse.x - (mouse.x % CELL_SIZE);
+		const gridPositionY = mouse.y - (mouse.y % CELL_SIZE);
+		const Y = gridPositionY / CELL_SIZE;
+		const X = gridPositionX / CELL_SIZE;
+		// BOUNDARY INPUT
 		if (MODE === 'obstacles') {
-				const gridPositionX = mouse.x - (mouse.x % CELL_SIZE);
-				const gridPositionY = mouse.y - (mouse.y % CELL_SIZE);
-				const Y = gridPositionY / CELL_SIZE;
-				const X = gridPositionX / CELL_SIZE;
 				if (ACCESSIBLE[Y][X]) {
 						OBSTACLES.push(new Obstacle(gridPositionX, gridPositionY));
 						ACCESSIBLE[Y][X] = false;
@@ -105,6 +116,13 @@ canvas.addEventListener('click', e => {
 										OBSTACLES.splice(n,1);
 						});
 						ACCESSIBLE[Y][X] = true;
+				}
+		}
+		// ENDS INPUT
+		if (MODE === 'ends') {
+				if(ACCESSIBLE[Y][X]) {
+						ENDPOINTS.push(new Endpoint(gridPositionX, gridPositionY));
+						console.log(ENDPOINTS);
 				}
 		}
 });
@@ -122,6 +140,7 @@ function createGrid() {
 // DRAWING/HANDLING
 const handleGrid = () => GRID.forEach(cell => cell.draw());
 const handleObstacles = () => OBSTACLES.forEach(obs => obs.draw());
+const handleEndpoints = () => ENDPOINTS.forEach(point => point.draw());
 
 // CANVAS MESSAGES
 function setModeText(mode) {
@@ -147,6 +166,7 @@ function run() {
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		handleGrid();
 		handleObstacles();
+		handleEndpoints();
 		setModeText(MODE);
 		requestAnimationFrame(run);
 }
