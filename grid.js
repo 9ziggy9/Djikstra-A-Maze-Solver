@@ -32,11 +32,27 @@ class GridGraph {
 				this.grid = new Array(this.height);
 				for (let y = 0; y < this.height; y++)
 						this.grid[y] = new Array(this.width);
-				}
+		}
 		initialize(value) {
 				for (let y = 0; y < this.height; y++)
 						for (let x = 0; x < this.width; x++)
 								this.grid[y][x] = value;
+		}
+		d = (a,b) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
+		neighbors(cell, access) {
+				const {x,y} = cell;
+				const neighbors = [];
+				if(x+1 <= this.width && access[y][x+1]) neighbors.push[{x:x+1,y:y}]
+				if(x-1 >= 0 && access[y][x-1]) neighbors.push[{x:x-1,y:y}]
+				if(y+1 <= this.height && access[y+1][x]) neighbors.push[{x:x,y:y+1}]
+				if(y-1 >= 0 && access[y-1][x]) neighbors.push[{x:x,y:y-1}]
+		}
+		Astar(start,end) {
+				let queue = [];
+				const visited = new Set();
+				queue.push(start);
+				while (queue.length > 0) {
+				}
 		}
 }
 
