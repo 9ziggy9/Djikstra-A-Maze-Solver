@@ -46,12 +46,16 @@ class GridGraph {
 				if(x-1 >= 0 && access[y][x-1]) neighbors.push[{x:x-1,y:y}]
 				if(y+1 <= this.height && access[y+1][x]) neighbors.push[{x:x,y:y+1}]
 				if(y-1 >= 0 && access[y-1][x]) neighbors.push[{x:x,y:y-1}]
+				return neighbors;
 		}
-		Astar(start,end) {
+		bfs(start,end,access) {
 				let queue = [];
 				const visited = new Set();
 				queue.push(start);
 				while (queue.length > 0) {
+						let current = queue[0];
+						if (current = end)
+								queue.push(this.neighbors(current,access));
 				}
 		}
 }
