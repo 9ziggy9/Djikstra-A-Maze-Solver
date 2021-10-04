@@ -6,8 +6,8 @@ canvas.height = 600;
 const CELL_SIZE = 50;
 const CELL_GAP = 3;
 const GRID = [];
-const OBSTACLES = [];
-const ENDPOINTS = [];
+let OBSTACLES = [];
+let ENDPOINTS = [];
 
 // Edit modes
 let MODE = 'obstacles';
@@ -91,10 +91,24 @@ let ACCESSIBLE = g.grid;
 
 // EVENT HANDLING
 window.addEventListener('keypress', e => {
+		console.log(e);
+		// TOGGLE INSERTION MODE
 		if(e.code === 'Space') {
 				if(MODE !== 'ends') { MODE = 'ends' }
 				else MODE = 'obstacles';
 				console.log(MODE);
+		}
+		// CLEAR END POINTS AND BOUNDARIES
+		if(e.key === 'q') {
+				if(MODE === 'ends') {
+						ENDPOINTS = [];
+						console.log('Cleared endpoints arr');
+				}
+				if(MODE === 'obstacles') {
+						OBSTACLES = [];
+						g.initialize(true);
+						console.log('Cleared obstacles arr');
+				}
 		}
 });
 canvas.addEventListener('mousemove', e => {
@@ -132,7 +146,7 @@ canvas.addEventListener('click', e => {
 						ENDPOINTS.push(new Endpoint(gridPositionX, gridPositionY, 'end'));
 						console.log(ENDPOINTS);
 				} else {
-						console.log('START AND END ARE THERE BRO');
+						console.log('Endpoints defined; press escape to clear, return to run.');
 				}
 		}
 });
