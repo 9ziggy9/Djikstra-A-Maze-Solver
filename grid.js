@@ -74,8 +74,13 @@ class Endpoint extends Cell {
 				this.type = type;
 		}
 		draw() {
-				ctx.fillStyle = 'red';
-				ctx.fillRect(this.x,this.y,this.width,this.height);
+				if (this.type === 'start') {
+						ctx.fillStyle = 'green'
+						ctx.fillRect(this.x,this.y,this.width,this.height);
+				} else {
+						ctx.fillStyle = 'red';
+						ctx.fillRect(this.x,this.y,this.width,this.height);
+				}
 		}
 }
 
@@ -120,9 +125,14 @@ canvas.addEventListener('click', e => {
 		}
 		// ENDS INPUT
 		if (MODE === 'ends') {
-				if(ACCESSIBLE[Y][X]) {
-						ENDPOINTS.push(new Endpoint(gridPositionX, gridPositionY));
+				if(ACCESSIBLE[Y][X] && !ENDPOINTS.find(point => point.type==='start')) {
+						ENDPOINTS.push(new Endpoint(gridPositionX, gridPositionY, 'start'));
 						console.log(ENDPOINTS);
+				} else if(ACCESSIBLE[Y][X] && !ENDPOINTS.find(point => point.type==='end')) {
+						ENDPOINTS.push(new Endpoint(gridPositionX, gridPositionY, 'end'));
+						console.log(ENDPOINTS);
+				} else {
+						console.log('START AND END ARE THERE BRO');
 				}
 		}
 });
