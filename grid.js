@@ -218,6 +218,7 @@ window.addEventListener('keypress', e => {
     console.log(e);
     // TOGGLE INSERTION MODE
     if (e.code === 'Space') {
+				PATH = [];
         if (MODE !== 'ends') {
             MODE = 'ends'
         } else MODE = 'obstacles';
