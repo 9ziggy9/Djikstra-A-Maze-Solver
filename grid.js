@@ -44,7 +44,7 @@ class GridGraph {
     // A* heuristic
     d = (a, b) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
 
-    neighbors(cell, access, visited) {
+    neighbors(cell, access, visited, target={x:0,y:0}) {
         const {
             x,
             y
@@ -62,7 +62,8 @@ class GridGraph {
                 parent: {
                     x: x,
                     y: y
-                }
+                },
+								distance: this.d({x:x+1,y:y}, target)
             });
         }
         if (x - 1 >= 0 && access[y][x - 1] &&
@@ -76,7 +77,8 @@ class GridGraph {
                 parent: {
                     x: x,
                     y: y
-                }
+                },
+								distance: this.d({x:x-1,y:y}, target)
             });
         }
         if (y + 1 <= this.height && access[y + 1][x] &&
@@ -90,7 +92,8 @@ class GridGraph {
                 parent: {
                     x: x,
                     y: y
-                }
+                },
+								distance: this.d({x:x,y:y+1}, target)
             });
         }
         if (y - 1 >= 0 && access[y - 1][x] &&
@@ -104,7 +107,8 @@ class GridGraph {
                 parent: {
                     x: x,
                     y: y
-                }
+                },
+								distance: this.d({x:x,y:y-1}, target)
             });
         }
         // console.log('--- LISTING NEIGHBORS ---');
@@ -134,6 +138,7 @@ class GridGraph {
         let previous = start;
         while (queue.length > 0) {
             let current = queue[0];
+						access[current.point.y][current.point.x] === false;
             if (!visited.some(visit => visit.point.x === current.point.x &&
                     visit.point.y === current.point.y)) {
                 visited.push(current);
@@ -157,6 +162,24 @@ class GridGraph {
         let queue = [];
         let visited = [];
 				const path = []
+				queue.push(start);
+				let previous = start;
+				while (queue.length > 0) {
+            let current = queue[0];
+            if (!visited.some(visit => visit.point.x === current.point.x &&
+															visit.point.y === current.point.y)) {
+                visited.push(current);
+            }
+            if (current.point.x === end.point.x && current.point.y === end.point.y) {
+                console.log(`DISCOVERED CELL: {${end.point.x},${end.point.y}}`);
+                const path = this.reconstructPath(visited);
+                return path;
+            }
+						queue.shift();
+            queue.push(...this.neighbors(current, access, visited));
+						queue.sort((cell1,cell2)=>cell2.distance-cell1.distance);
+						queue.forEach(cell=>console.log(cell));
+				}
     }
 }
 
