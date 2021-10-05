@@ -8,6 +8,7 @@ const CELL_GAP = 3;
 const GRID = [];
 let OBSTACLES = [];
 let ENDPOINTS = [];
+let PATH = [];
 
 // Edit modes
 let MODE = 'obstacles';
@@ -127,6 +128,10 @@ class Cell {
 						ctx.strokeRect(this.x,this.y,this.width,this.height);
 				}
 		}
+		drawPath() {
+				ctx.fillStyle = 'green';
+				ctx.fillRect(this.x,this.y,this.width,this.height);
+		}
 }
 
 class Obstacle {
@@ -149,7 +154,7 @@ class Endpoint extends Cell {
 		}
 		draw() {
 				if (this.type === 'start') {
-						ctx.fillStyle = 'green'
+						ctx.fillStyle = 'blue'
 						ctx.fillRect(this.x,this.y,this.width,this.height);
 				} else {
 						ctx.fillStyle = 'red';
@@ -162,9 +167,6 @@ class Endpoint extends Cell {
 let g = new GridGraph(last_x,last_y);
 g.initialize(true);
 let ACCESSIBLE = g.grid;
-let start = {point:{x:0,y:0},parent:null};
-let end = {point: {x:7,y:7},parent:null};
-console.log(g.bfs(start,end,ACCESSIBLE));
 
 // EVENT HANDLING
 window.addEventListener('keypress', e => {
@@ -186,6 +188,16 @@ window.addEventListener('keypress', e => {
 						g.initialize(true);
 						console.log('Cleared obstacles arr');
 				}
+		}
+		if(e.code === 'Enter') {
+				const [sEndpoint, eEndpoint] = ENDPOINTS;
+				const start = {point: {x:sEndpoint.x/CELL_SIZE, y:sEndpoint.y/CELL_SIZE},
+											 parent:null};
+				const end = {point: {x:eEndpoint.x/CELL_SIZE, y:eEndpoint.y/CELL_SIZE},
+										 parent:null};
+				g.bfs(start,end,ACCESSIBLE).forEach(p => PATH.push(new Cell(CELL_SIZE*p.x,
+																																		CELL_SIZE*p.y)));
+				console.log(PATH);
 		}
 });
 canvas.addEventListener('mousemove', e => {
@@ -242,6 +254,7 @@ function createGrid() {
 const handleGrid = () => GRID.forEach(cell => cell.draw());
 const handleObstacles = () => OBSTACLES.forEach(obs => obs.draw());
 const handleEndpoints = () => ENDPOINTS.forEach(point => point.draw());
+const handlePath = () => PATH.forEach(point => point.drawPath());
 
 // CANVAS MESSAGES
 function setModeText(mode) {
@@ -268,6 +281,7 @@ function run() {
 		handleGrid();
 		handleObstacles();
 		handleEndpoints();
+		handlePath();
 		setModeText(MODE);
 		requestAnimationFrame(run);
 }
