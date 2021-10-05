@@ -51,8 +51,7 @@ class GridGraph {
         } = cell.point;
         const neighbors = [];
         // console.log(`{${x}, ${y}}`);
-        if (x + 1 <= this.width && access[y][x + 1] &&
-            !visited.some(visit => visit.point.x === x + 1 && visit.point.y === y)) {
+        if (x + 1 <= this.width && access[y][x + 1]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x+1},${y}}`);
             neighbors.push({
                 point: {
@@ -66,8 +65,7 @@ class GridGraph {
 								distance: this.d({x:x+1,y:y}, target)
             });
         }
-        if (x - 1 >= 0 && access[y][x - 1] &&
-            !visited.some(visit => visit.point.x === x - 1 && visit.point.y === y)) {
+        if (x - 1 >= 0 && access[y][x - 1]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x-1},${y}}`);
             neighbors.push({
                 point: {
@@ -81,8 +79,7 @@ class GridGraph {
 								distance: this.d({x:x-1,y:y}, target)
             });
         }
-        if (y + 1 <= this.height && access[y + 1][x] &&
-            !visited.some(visit => visit.point.x === x && visit.point.y === y + 1)) {
+        if (y + 1 <= this.height && access[y + 1][x]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x},${y+1}}`);
             neighbors.push({
                 point: {
@@ -96,8 +93,7 @@ class GridGraph {
 								distance: this.d({x:x,y:y+1}, target)
             });
         }
-        if (y - 1 >= 0 && access[y - 1][x] &&
-            !visited.some(visit => visit.point.x === x && visit.point.y === y - 1)) {
+        if (y - 1 >= 0 && access[y - 1][x]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x},${y-1}}`);
             neighbors.push({
                 point: {
