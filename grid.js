@@ -44,15 +44,13 @@ class GridGraph {
     // A* heuristic
     d = (a, b) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
 
-    neighbors(cell, access, visited, target={x:0,y:0}) {
-        const {
-            x,
-            y
-        } = cell.point;
+    neighbors(cell, access, target={x:0,y:0}) {
+        const {x,y} = cell.point;
         const neighbors = [];
         // console.log(`{${x}, ${y}}`);
         if (x + 1 <= this.width && access[y][x + 1]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x+1},${y}}`);
+						access[y][x+1] = false;
             neighbors.push({
                 point: {
                     x: x + 1,
@@ -67,6 +65,7 @@ class GridGraph {
         }
         if (x - 1 >= 0 && access[y][x - 1]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x-1},${y}}`);
+						access[y][x-1] = false;
             neighbors.push({
                 point: {
                     x: x - 1,
@@ -81,6 +80,7 @@ class GridGraph {
         }
         if (y + 1 <= this.height && access[y + 1][x]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x},${y+1}}`);
+						access[y+1][x] = false;
             neighbors.push({
                 point: {
                     x: x,
@@ -95,6 +95,7 @@ class GridGraph {
         }
         if (y - 1 >= 0 && access[y - 1][x]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x},${y-1}}`);
+						access[y-1][x] = false;
             neighbors.push({
                 point: {
                     x: x,
@@ -134,7 +135,6 @@ class GridGraph {
         let previous = start;
         while (queue.length > 0) {
             let current = queue[0];
-						access[current.point.y][current.point.x] === false;
             if (!visited.some(visit => visit.point.x === current.point.x &&
                     visit.point.y === current.point.y)) {
                 visited.push(current);
@@ -145,7 +145,7 @@ class GridGraph {
                 const path = this.reconstructPath(visited);
                 return path;
             }
-            queue.push(...this.neighbors(current, access, visited));
+            queue.push(...this.neighbors(current, access));
             console.log(`Leaving cell: {${current.point.x}, ${current.point.y}}`)
             queue.shift();
             console.log('--- VISTED CELLS ---');
@@ -171,8 +171,8 @@ class GridGraph {
                 const path = this.reconstructPath(visited);
                 return path;
             }
+            queue.push(...this.neighbors(current, access, {x:end.point.x,y:end.point.y}));
 						queue.shift();
-            queue.push(...this.neighbors(current, access, visited));
 						queue.sort((cell1,cell2)=>cell2.distance-cell1.distance);
 						queue.forEach(cell=>console.log(cell));
 				}
