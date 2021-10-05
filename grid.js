@@ -49,22 +49,22 @@ class GridGraph {
 				// console.log(`{${x}, ${y}}`);
 				if(x+1 <= this.width && access[y][x+1] &&
 					 !visited.some(visit => visit.point.x === x+1 && visit.point.y === y)){
-						console.log(`Added neighbor of {${x} ,${y}}: @{${x+1},${y}}`);
+						console.log(`Added neighbor of {${x},${y}}: @{${x+1},${y}}`);
 						neighbors.push({point:{x:x+1,y:y}, parent:{x:x,y:y}});
 				}
 				if(x-1 >= 0 && access[y][x-1] &&
 					 !visited.some(visit => visit.point.x === x-1 && visit.point.y === y)){
-						console.log(`Added neighbor of {${x} ,${y}}: @{${x-1},${y}}`);
+						console.log(`Added neighbor of {${x},${y}}: @{${x-1},${y}}`);
 						neighbors.push({point:{x:x-1,y:y}, parent:{x:x,y:y}});
 				}
 				if(y+1 <= this.height && access[y+1][x] &&
 					 !visited.some(visit => visit.point.x === x && visit.point.y === y+1)){
-						console.log(`Added neighbor of {${x} ,${y}}: @{${x},${y+1}}`);
+						console.log(`Added neighbor of {${x},${y}}: @{${x},${y+1}}`);
 						neighbors.push({point:{x:x,y:y+1}, parent:{x:x,y:y}});
 				}
 				if(y-1 >= 0 && access[y-1][x] &&
 					 !visited.some(visit => visit.point.x === x && visit.point.y === y-1)){
-						console.log(`Added neighbor of {${x} ,${y}}: @{${x},${y-1}}`);
+						console.log(`Added neighbor of {${x},${y}}: @{${x},${y-1}}`);
 						neighbors.push({point:{x:x,y:y-1}, parent:{x:x,y:y}});
 				}
 				// console.log('--- LISTING NEIGHBORS ---');
@@ -72,9 +72,24 @@ class GridGraph {
 				return neighbors;
 		}
 
+		reconstructPath(history) {
+				const path = [];
+				//grab last of visited paths
+				let next = history[history.length - 1];
+				const end = history[0];
+				while (next !== end) {
+						path.push(next.point);
+						next = history.find(prev => next.parent.x === prev.point.x &&
+															 next.parent.y === prev.point.y);
+				}
+				path.push(end.point);
+				return path;
+		}
+
 		bfs(start,end,access) {
 				let queue = [];
 				let visited = [];
+				const path = [];
 				queue.push(start);
 				let previous = start;
 				while (queue.length > 0) {
@@ -86,7 +101,8 @@ class GridGraph {
 						console.log(`Visiting cell: {${current.point.x}, ${current.point.y}}`)
 						if (current.point.x === end.point.x && current.point.y === end.point.y) {
 								console.log(`DISCOVERED CELL: {${end.point.x},${end.point.y}}`);
-								return visited;
+								const path = this.reconstructPath(visited);
+								return path;
 						}
 						queue.push(...this.neighbors(current,access,visited));
 						console.log(`Leaving cell: {${current.point.x}, ${current.point.y}}`)
@@ -147,7 +163,7 @@ let g = new GridGraph(last_x,last_y);
 g.initialize(true);
 let ACCESSIBLE = g.grid;
 let start = {point:{x:0,y:0},parent:null};
-let end = {point: {x:1,y:1},parent:null};
+let end = {point: {x:7,y:7},parent:null};
 console.log(g.bfs(start,end,ACCESSIBLE));
 
 // EVENT HANDLING
