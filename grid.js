@@ -234,6 +234,10 @@ window.addEventListener('keypress', e => {
             g.initialize(true);
             console.log('Cleared obstacles arr');
         }
+				if (PATH) {
+						PATH = [];
+						console.log('Cleared path.')
+				}
     }
     if (e.code === 'Enter') {
         const [sEndpoint, eEndpoint] = ENDPOINTS;
