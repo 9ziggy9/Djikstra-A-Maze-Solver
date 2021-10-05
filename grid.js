@@ -30,33 +30,71 @@ class GridGraph {
 				this.height = height;
 				//Build 2d array
 				this.grid = new Array(this.height);
-				for (let y = 0; y < this.height; y++)
+				for (let y = 0; y <= this.height; y++)
 						this.grid[y] = new Array(this.width);
 		}
+
 		initialize(value) {
-				for (let y = 0; y < this.height; y++)
-						for (let x = 0; x < this.width; x++)
+				for (let y = 0; y <= this.height; y++)
+						for (let x = 0; x <= this.width; x++)
 								this.grid[y][x] = value;
 		}
+
+		// A* heuristic
 		d = (a,b) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
-		neighbors(cell, access) {
-				const {x,y} = cell;
+
+		neighbors(cell, access, visited) {
+				const {x,y} = cell.point;
 				const neighbors = [];
-				if(x+1 <= this.width && access[y][x+1]) neighbors.push[{x:x+1,y:y}]
-				if(x-1 >= 0 && access[y][x-1]) neighbors.push[{x:x-1,y:y}]
-				if(y+1 <= this.height && access[y+1][x]) neighbors.push[{x:x,y:y+1}]
-				if(y-1 >= 0 && access[y-1][x]) neighbors.push[{x:x,y:y-1}]
+				// console.log(`{${x}, ${y}}`);
+				if(x+1 <= this.width && access[y][x+1] &&
+					 !visited.some(visit => visit.point.x === x+1 && visit.point.y === y)){
+						console.log(`Added neighbor of {${x} ,${y}}: @{${x+1},${y}}`);
+						neighbors.push({point:{x:x+1,y:y}, parent:{x:x,y:y}});
+				}
+				if(x-1 >= 0 && access[y][x-1] &&
+					 !visited.some(visit => visit.point.x === x-1 && visit.point.y === y)){
+						console.log(`Added neighbor of {${x} ,${y}}: @{${x-1},${y}}`);
+						neighbors.push({point:{x:x-1,y:y}, parent:{x:x,y:y}});
+				}
+				if(y+1 <= this.height && access[y+1][x] &&
+					 !visited.some(visit => visit.point.x === x && visit.point.y === y+1)){
+						console.log(`Added neighbor of {${x} ,${y}}: @{${x},${y+1}}`);
+						neighbors.push({point:{x:x,y:y+1}, parent:{x:x,y:y}});
+				}
+				if(y-1 >= 0 && access[y-1][x] &&
+					 !visited.some(visit => visit.point.x === x && visit.point.y === y-1)){
+						console.log(`Added neighbor of {${x} ,${y}}: @{${x},${y-1}}`);
+						neighbors.push({point:{x:x,y:y-1}, parent:{x:x,y:y}});
+				}
+				// console.log('--- LISTING NEIGHBORS ---');
+				// neighbors.forEach(neighbor => console.log(`NEIGHBOR AT: {${neighbor.x} ${neighbor.y}}`));
 				return neighbors;
 		}
+
 		bfs(start,end,access) {
 				let queue = [];
-				const visited = new Set();
+				let visited = [];
 				queue.push(start);
+				let previous = start;
 				while (queue.length > 0) {
 						let current = queue[0];
-						if (current = end)
-								queue.push(this.neighbors(current,access));
+						if(!visited.some(visit => visit.point.x === current.point.x &&
+														 visit.point.y === current.point.y)) {
+								visited.push(current);
+						}
+						console.log(`Visiting cell: {${current.point.x}, ${current.point.y}}`)
+						if (current.point.x === end.point.x && current.point.y === end.point.y) {
+								console.log(`DISCOVERED CELL: {${end.point.x},${end.point.y}}`);
+								return visited;
+						}
+						queue.push(...this.neighbors(current,access,visited));
+						console.log(`Leaving cell: {${current.point.x}, ${current.point.y}}`)
+						queue.shift();
+						console.log('--- VISTED CELLS ---');
+						visited.forEach(visit => console.log(visit));
 				}
+				return visited;
 		}
 }
 
@@ -108,6 +146,9 @@ class Endpoint extends Cell {
 let g = new GridGraph(last_x,last_y);
 g.initialize(true);
 let ACCESSIBLE = g.grid;
+let start = {point:{x:0,y:0},parent:null};
+let end = {point: {x:1,y:1},parent:null};
+console.log(g.bfs(start,end,ACCESSIBLE));
 
 // EVENT HANDLING
 window.addEventListener('keypress', e => {
