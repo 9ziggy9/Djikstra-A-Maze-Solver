@@ -153,10 +153,7 @@ class GridGraph {
         let previous = start;
         while (queue.length > 0) {
             let current = queue[0];
-            if (!visited.some(visit => visit.point.x === current.point.x &&
-                    visit.point.y === current.point.y)) {
-                visited.push(current);
-            }
+						visited.push(current);
             console.log(`Visiting cell: {${current.point.x}, ${current.point.y}}`)
             if (current.point.x === end.point.x && current.point.y === end.point.y) {
                 console.log(`DISCOVERED CELL: {${end.point.x},${end.point.y}}`);
@@ -180,10 +177,7 @@ class GridGraph {
         let previous = start;
         while (queue.length > 0) {
             let current = queue[0];
-            if (!visited.some(visit => visit.point.x === current.point.x &&
-                    visit.point.y === current.point.y)) {
-                visited.push(current);
-            }
+						visited.push(current);
             if (current.point.x === end.point.x && current.point.y === end.point.y) {
                 console.log(`DISCOVERED CELL: {${end.point.x},${end.point.y}}`);
                 const path = this.reconstructPath(visited);
