@@ -188,7 +188,7 @@ class GridGraph {
                 y: end.point.y
             }));
             queue.shift();
-            queue.sort((cell1, cell2) => cell2.distance - cell1.distance);
+            queue.sort((cell1, cell2) => cell1.distance - cell2.distance);
             queue.forEach(cell => console.log(cell));
         }
     }
@@ -291,7 +291,7 @@ window.addEventListener('keypress', e => {
             },
             parent: null
         };
-        g.bfs(start, end, ACCESSIBLE).forEach(p =>
+        g.aStar(start, end, ACCESSIBLE).forEach(p =>
             PATH.push(new Cell(CELL_SIZE * p.x, CELL_SIZE * p.y)));
 				ENDPOINTS = [];
         console.log(PATH);
@@ -305,6 +305,8 @@ canvas.addEventListener('mouseleave', e => {
     mouse.x = undefined;
     mouse.y = undefined;
 })
+canvas.addEventListener('mousedown', e => {
+});
 canvas.addEventListener('click', e => {
     const gridPositionX = mouse.x - (mouse.x % CELL_SIZE);
     const gridPositionY = mouse.y - (mouse.y % CELL_SIZE);
