@@ -41,16 +41,22 @@ class GridGraph {
                 this.grid[y][x] = value;
     }
 
-    // A* heuristic
+    // A* heuristic : Euclidean distance
     d = (a, b) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
 
-    neighbors(cell, access, target={x:0,y:0}) {
-        const {x,y} = cell.point;
+    neighbors(cell, access, target = {
+        x: 0,
+        y: 0
+    }) {
+        const {
+            x,
+            y
+        } = cell.point;
         const neighbors = [];
         // console.log(`{${x}, ${y}}`);
         if (x + 1 <= this.width && access[y][x + 1]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x+1},${y}}`);
-						access[y][x+1] = false;
+            access[y][x + 1] = false;
             neighbors.push({
                 point: {
                     x: x + 1,
@@ -60,12 +66,15 @@ class GridGraph {
                     x: x,
                     y: y
                 },
-								distance: this.d({x:x+1,y:y}, target)
+                distance: this.d({
+                    x: x + 1,
+                    y: y
+                }, target)
             });
         }
         if (x - 1 >= 0 && access[y][x - 1]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x-1},${y}}`);
-						access[y][x-1] = false;
+            access[y][x - 1] = false;
             neighbors.push({
                 point: {
                     x: x - 1,
@@ -75,12 +84,15 @@ class GridGraph {
                     x: x,
                     y: y
                 },
-								distance: this.d({x:x-1,y:y}, target)
+                distance: this.d({
+                    x: x - 1,
+                    y: y
+                }, target)
             });
         }
         if (y + 1 <= this.height && access[y + 1][x]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x},${y+1}}`);
-						access[y+1][x] = false;
+            access[y + 1][x] = false;
             neighbors.push({
                 point: {
                     x: x,
@@ -90,12 +102,15 @@ class GridGraph {
                     x: x,
                     y: y
                 },
-								distance: this.d({x:x,y:y+1}, target)
+                distance: this.d({
+                    x: x,
+                    y: y + 1
+                }, target)
             });
         }
         if (y - 1 >= 0 && access[y - 1][x]) {
             console.log(`Added neighbor of {${x},${y}}: @{${x},${y-1}}`);
-						access[y-1][x] = false;
+            access[y - 1][x] = false;
             neighbors.push({
                 point: {
                     x: x,
@@ -105,7 +120,10 @@ class GridGraph {
                     x: x,
                     y: y
                 },
-								distance: this.d({x:x,y:y-1}, target)
+                distance: this.d({
+                    x: x,
+                    y: y - 1
+                }, target)
             });
         }
         // console.log('--- LISTING NEIGHBORS ---');
@@ -157,13 +175,13 @@ class GridGraph {
     aStar(start, end, access) {
         let queue = [];
         let visited = [];
-				const path = []
-				queue.push(start);
-				let previous = start;
-				while (queue.length > 0) {
+        const path = []
+        queue.push(start);
+        let previous = start;
+        while (queue.length > 0) {
             let current = queue[0];
             if (!visited.some(visit => visit.point.x === current.point.x &&
-															visit.point.y === current.point.y)) {
+                    visit.point.y === current.point.y)) {
                 visited.push(current);
             }
             if (current.point.x === end.point.x && current.point.y === end.point.y) {
@@ -171,11 +189,14 @@ class GridGraph {
                 const path = this.reconstructPath(visited);
                 return path;
             }
-            queue.push(...this.neighbors(current, access, {x:end.point.x,y:end.point.y}));
-						queue.shift();
-						queue.sort((cell1,cell2)=>cell2.distance-cell1.distance);
-						queue.forEach(cell=>console.log(cell));
-				}
+            queue.push(...this.neighbors(current, access, {
+                x: end.point.x,
+                y: end.point.y
+            }));
+            queue.shift();
+            queue.sort((cell1, cell2) => cell2.distance - cell1.distance);
+            queue.forEach(cell => console.log(cell));
+        }
     }
 }
 
@@ -237,7 +258,7 @@ window.addEventListener('keypress', e => {
     console.log(e);
     // TOGGLE INSERTION MODE
     if (e.code === 'Space') {
-				PATH = [];
+        PATH = [];
         if (MODE !== 'ends') {
             MODE = 'ends'
         } else MODE = 'obstacles';
@@ -245,21 +266,22 @@ window.addEventListener('keypress', e => {
     }
     // CLEAR END POINTS AND BOUNDARIES
     if (e.key === 'q') {
-        if (MODE === 'ends') {
-            ENDPOINTS = [];
-            console.log('Cleared endpoints arr');
-        }
+				ENDPOINTS = [];
+				PATH = [];
+				g.initialize(true);
+				OBSTACLES.forEach(o => {
+					ACCESSIBLE[o.y/CELL_SIZE][o.x/CELL_SIZE] = false;
+				});
+				console.log(ACCESSIBLE);
+				console.log('Cleared path.')
         if (MODE === 'obstacles') {
             OBSTACLES = [];
             g.initialize(true);
             console.log('Cleared obstacles arr');
         }
-				if (PATH) {
-						PATH = [];
-						console.log('Cleared path.')
-				}
     }
-    if (e.code === 'Enter') {
+
+    if (e.code === 'Enter' && ENDPOINTS.length === 2) {
         const [sEndpoint, eEndpoint] = ENDPOINTS;
         const start = {
             point: {
@@ -276,7 +298,8 @@ window.addEventListener('keypress', e => {
             parent: null
         };
         g.bfs(start, end, ACCESSIBLE).forEach(p =>
-						PATH.push(new Cell(CELL_SIZE * p.x,CELL_SIZE * p.y)));
+            PATH.push(new Cell(CELL_SIZE * p.x, CELL_SIZE * p.y)));
+				ENDPOINTS = [];
         console.log(PATH);
     }
 });
