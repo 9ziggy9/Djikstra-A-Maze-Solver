@@ -55,7 +55,6 @@ class GridGraph {
         const neighbors = [];
         // console.log(`{${x}, ${y}}`);
         if (x + 1 <= this.width && access[y][x + 1]) {
-            console.log(`Added neighbor of {${x},${y}}: @{${x+1},${y}}`);
             access[y][x + 1] = false;
             neighbors.push({
                 point: {
@@ -73,7 +72,6 @@ class GridGraph {
             });
         }
         if (x - 1 >= 0 && access[y][x - 1]) {
-            console.log(`Added neighbor of {${x},${y}}: @{${x-1},${y}}`);
             access[y][x - 1] = false;
             neighbors.push({
                 point: {
@@ -91,7 +89,6 @@ class GridGraph {
             });
         }
         if (y + 1 <= this.height && access[y + 1][x]) {
-            console.log(`Added neighbor of {${x},${y}}: @{${x},${y+1}}`);
             access[y + 1][x] = false;
             neighbors.push({
                 point: {
@@ -109,7 +106,6 @@ class GridGraph {
             });
         }
         if (y - 1 >= 0 && access[y - 1][x]) {
-            console.log(`Added neighbor of {${x},${y}}: @{${x},${y-1}}`);
             access[y - 1][x] = false;
             neighbors.push({
                 point: {
@@ -126,8 +122,6 @@ class GridGraph {
                 }, target)
             });
         }
-        // console.log('--- LISTING NEIGHBORS ---');
-        // neighbors.forEach(neighbor => console.log(`NEIGHBOR AT: {${neighbor.x} ${neighbor.y}}`));
         return neighbors;
     }
 
@@ -154,17 +148,13 @@ class GridGraph {
         while (queue.length > 0) {
             let current = queue[0];
 						visited.push(current);
-            console.log(`Visiting cell: {${current.point.x}, ${current.point.y}}`)
             if (current.point.x === end.point.x && current.point.y === end.point.y) {
                 console.log(`DISCOVERED CELL: {${end.point.x},${end.point.y}}`);
                 const path = this.reconstructPath(visited);
                 return path;
             }
             queue.push(...this.neighbors(current, access));
-            console.log(`Leaving cell: {${current.point.x}, ${current.point.y}}`)
             queue.shift();
-            console.log('--- VISTED CELLS ---');
-            visited.forEach(visit => console.log(visit));
         }
         return visited;
     }
@@ -189,7 +179,6 @@ class GridGraph {
             }));
             queue.shift();
             queue.sort((cell1, cell2) => cell1.distance - cell2.distance);
-            queue.forEach(cell => console.log(cell));
         }
     }
 }
@@ -291,7 +280,7 @@ window.addEventListener('keypress', e => {
             },
             parent: null
         };
-        g.aStar(start, end, ACCESSIBLE).forEach(p =>
+        g.bfs(start, end, ACCESSIBLE).forEach(p =>
             PATH.push(new Cell(CELL_SIZE * p.x, CELL_SIZE * p.y)));
 				ENDPOINTS = [];
         console.log(PATH);
