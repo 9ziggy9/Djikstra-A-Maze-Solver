@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = 900;
 canvas.height = 600;
 
-const CELL_SIZE = 20;
+const CELL_SIZE = 40;
 const CELL_GAP = 3;
 const GRID = [];
 let OBSTACLES = [];
